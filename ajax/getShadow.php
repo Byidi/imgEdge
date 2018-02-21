@@ -24,15 +24,10 @@ function getShadow($originalFile){
 	$c = $imagick->getImagePixelColor(1, 1);
 	$imagick->floodFillPaintImage('transparent', 1 , $c , 0, 0, false);
 
-	//$imagick->writeImage ($originalFile['dir']."0_combine_".$originalFile['name'].".".$originalFile['ext']);
-
 	$imagick->edgeImage(1);
-
-	//$imagick->writeImage ($originalFile['dir']."1_charcoal_".$originalFile['name'].".".$originalFile['ext']);
 
 	$c = $imagick->getImagePixelColor(1, 1);
 	$imagick->floodFillPaintImage("#FF1493", 1, $c, 1, 1, false);
-	//$imagick->writeImage ($originalFile['dir']."2_floodfill_".$originalFile['name'].".".$originalFile['ext']);
 
 	$imageIterator = $imagick->getPixelIterator();
 
@@ -47,8 +42,6 @@ function getShadow($originalFile){
 	   }
 	   $imageIterator->syncIterator();
 	}
-
-	//$imagick->writeImage ($originalFile['dir']."3_pixelcolor_".$originalFile['name'].".".$originalFile['ext']);
 
 	$imagick->writeImage ($originalFile['dir']."final_".$originalFile['name'].".".$originalFile['ext']);
 	$imagick->destroy();
@@ -75,11 +68,11 @@ if(!empty($_POST['file'])){
 	$target_file = $target_dir . basename($imageName.".".$imageFileType);
 
     $fileInfo = array(
-				"path" => $target_dir.$imageName.".".$imageFileType,
-				"name" => $imageName,
-				"ext" => $imageFileType,
-				"dir" => $target_dir
-			);
+		"path" => $target_dir.$imageName.".".$imageFileType,
+		"name" => $imageName,
+		"ext" => $imageFileType,
+		"dir" => $target_dir
+	);
 
     echo getShadow($fileInfo);
 }else{

@@ -32,7 +32,6 @@ function upload(){
 
 function getShadow(file){
     $("#backContent").css("visibility","visible");
-    console.log("search shadow");
     $.ajax({
         type: "POST",
         url: "./ajax/getShadow.php",
@@ -41,9 +40,7 @@ function getShadow(file){
         'file': file
         },
         success: function(msg){
-            console.log("shadowed : "+msg);
             showImg(file);
-            console.log(msg);
             $("#backContent").css("visibility","hidden");
             return msg;
         }
@@ -51,7 +48,6 @@ function getShadow(file){
 }
 
 function showImg(file){
-    console.log(file);
     var file = file.split("/");
     var filePath = "";
     for(var i=1; i<file.length-1; i++){
@@ -61,7 +57,6 @@ function showImg(file){
     var split = file.split(".");
     var fileExt = split[1];
     var fileName = split[0];
-
 
     var d = new Date();
     $("#originalFile").attr("src","./"+filePath+fileName+"."+fileExt+"?"+d.getTime());
