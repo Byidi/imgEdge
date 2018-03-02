@@ -1,35 +1,15 @@
 <?php
-ini_set("memory_limit","256M");
+ini_set("memory_limit", "256M");
 ini_set('max_execution_time', 300);
 
-function getShadow($originalFile){
-	$original = new Imagick(realpath($originalFile['path']));
+function getShadow($file, $range){
+	$original = new Imagick(realpath($file['basedir'].$file['path']."/".$file['name'].".".$file['ext']));
 	$original->setImageBackgroundColor(new ImagickPixel('transparent'));
 
-	$geo = $original->getImageGeometry();
-	$width = $geo['width']+100;
-	$height = $geo['height']+100;
+	$c = $original->getImagePixelColor(0,0);
+    $original->floodFillPaintImage('rgba(255,20,147)', $range, $c, 0, 0, false);
 
-	$imagick = new Imagick();
-	$imagick->newImage($width, $height, 'none');
-	$imagick->setImageFormat('png');
-	$imagick->setImageBackgroundColor(new ImagickPixel('transparent'));
-
-	$c = $original->getImagePixelColor(1, 1);
-	$original->floodFillPaintImage('transparent', 255, $c, 0, 0, false);
-
-	$imagick->compositeImage($original, 3, 50, 50);
-	$imagick->setImageBackgroundColor(new ImagickPixel('transparent'));
-
-	$c = $imagick->getImagePixelColor(1, 1);
-	$imagick->floodFillPaintImage('transparent', 1 , $c , 0, 0, false);
-
-	$imagick->edgeImage(1);
-
-	$c = $imagick->getImagePixelColor(1, 1);
-	$imagick->floodFillPaintImage("#FF1493", 1, $c, 1, 1, false);
-
-	$imageIterator = $imagick->getPixelIterator();
+	$imageIterator = $original->getPixelIterator();
 
 	foreach ($imageIterator as $row => $pixels) {
 	   foreach ($pixels as $column => $pixel) {
@@ -43,38 +23,22 @@ function getShadow($originalFile){
 	   $imageIterator->syncIterator();
 	}
 
-	$imagick->writeImage ($originalFile['dir']."final_".$originalFile['name'].".".$originalFile['ext']);
-	$imagick->destroy();
+	$original->writeImage($file['basedir'].$file['path']."/shadow.png");
+	$original->destroy();
 
-	exec("convert ".$originalFile['dir']."final_".$originalFile['name'].".".$originalFile['ext']." ".$originalFile['dir'].$originalFile['name'].".ppm");
-	exec("potrace -s ".$originalFile['dir'].$originalFile['name'].".ppm -o ".$originalFile['dir'].$originalFile['name'].".svg");
-	exec("rm ".$originalFile['dir']."final_".$originalFile['name'].".".$originalFile['ext']."");
-	exec("rm ".$originalFile['dir'].$originalFile['name'].".ppm");
+	exec("convert ".$file['basedir'].$file['path']."/shadow.png ".$file['basedir'].$file['path']."/shadow.ppm");
+	exec("potrace -s ".$file['basedir'].$file['path']."/shadow.ppm -o ".$file['basedir'].$file['path']."/shadow.svg");
 
-    return $originalFile['dir'].$originalFile['name'].".svg";
+    return $file['basedir'].$file['path']."/shadow.svg";
 }
 
-if(!empty($_POST['file'])){
-    $file = $_POST['file'];
+if(!empty($_POST['file']) && !empty($_POST['range'])){
+	$file = $_POST['file'];
+	$range = $_POST['range'];
+    $fileInfo = array();
+    preg_match('#^(?<basedir>[.]+\/)(?<path>.*)[\/](?<name>.*)[.](?<ext>.*)#', $file, $fileInfo);
 
-    $target_dir = "../img/work/";
-
-	$exp = explode("/",$file);
-    $img = $exp[sizeof($exp)-1];
-    $exp = explode(".",$img);
-	$imageName = $exp[sizeof($exp)-2];
-
-	$imageFileType = strtolower(pathinfo($file,PATHINFO_EXTENSION));
-	$target_file = $target_dir . basename($imageName.".".$imageFileType);
-
-    $fileInfo = array(
-		"path" => $target_dir.$imageName.".".$imageFileType,
-		"name" => $imageName,
-		"ext" => $imageFileType,
-		"dir" => $target_dir
-	);
-
-    echo getShadow($fileInfo);
+    echo getShadow($fileInfo, $range);
 }else{
     echo 'error';
 }

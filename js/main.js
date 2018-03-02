@@ -1,6 +1,3 @@
-function init(){
-}
-
 function upload(){
     $("#uploadSubmit").click(function(e){
         e.preventDefault();
@@ -18,53 +15,46 @@ function upload(){
                 processData: false,
                 data: formData,
                 type: 'post',
-                success: function(msg){
-                    console.log("file uploaded : "+msg);
-                    var shadow = getShadow(msg);
-                    $("#uploadSubmit").removeAttr('disabled').val("Envoyer");
+                success: function(data){
+                    $("#uploadSubmit").parent().remove();
                     $("#result").css("visibility","visible");
-                    return shadow;
+                    $("#backContent").css("visibility","hidden");
+                    getShadow(data, $("#range").val());
+                    $("#range").change(function(){
+                        getShadow(data, $("#range").val());
+                    });
                 }
             });
         }
     });
 }
 
-function getShadow(file){
+function getShadow(file, range){
     $("#backContent").css("visibility","visible");
     $.ajax({
         type: "POST",
         url: "./ajax/getShadow.php",
         dataType: 'text',
         data: {
-        'file': file
+            'file': file,
+            'range': range
         },
-        success: function(msg){
-            showImg(file);
+        success: function(data){
             $("#backContent").css("visibility","hidden");
-            return msg;
+            showImg(data);
+            return data;
         }
     });
 }
 
 function showImg(file){
-    var file = file.split("/");
-    var filePath = "";
-    for(var i=1; i<file.length-1; i++){
-        filePath += file[i]+"/";
-    }
-    file = file[file.length-1];
-    var split = file.split(".");
-    var fileExt = split[1];
-    var fileName = split[0];
+    file = (file[0] == file[1] && file[1]== ".")? file.slice(1):file;
 
     var d = new Date();
-    $("#originalFile").attr("src","./"+filePath+fileName+"."+fileExt+"?"+d.getTime());
-    $("#vectorFile").attr("src","./"+filePath+fileName+".svg?"+d.getTime());
-
+    var img = $('<img src="'+file+'?'+d+'" alt="shadow">');
+    $("#canva").empty().append(img);
 }
 
 $(document).ready(function() {
-    init();
     upload();
 });

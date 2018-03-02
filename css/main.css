@@ -1,24 +1,31 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+#formUpload{
+    margin-bottom: 50px;
+}
+
 #content{
-    width: 60%;
+    width: 80%;
     margin: auto auto;
-    position: relative;
-    z-index: 1;
     background-color: #FFFFFF;
     border : 2px solid black;
     border-radius: 20px;
     text-align: center;
     padding: 10px;
-    margin-top: 50vh;
+    position: relative;
+    z-index: 1;
     margin-left: 50vw;
-    transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%);
 }
 
 #backContent{
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     position: absolute;
     visibility: hidden;
-    border-radius: 20px;
     z-index: 999;
     top:0px;
     left:0px;
@@ -31,10 +38,15 @@
 
 #result{
     visibility: hidden;
-    margin-top: 50px;
 }
 
-#result img{
-    height: 300px;
-    margin: 0px 20px;
+#canva{
+    display:  inline-block;
+    border: 1px solid black;
+    position: relative;
+}
+
+#canva img{
+    width: 500px;
+    z-index: 2;
 }

@@ -1,6 +1,5 @@
 <?php
 require_once('./include/header.php');
-require_once('./include/footer.php');
 
 echo '
 <div id="content">
@@ -10,11 +9,14 @@ echo '
     	<input type="hidden" name="MAX_FILE_SIZE" value="100000" id="uploadMaxSize"/>
     </form>
     <div id="result">
-        <img src="" id="originalFile" />
-        <img src="" id="vectorFile" />
+        <div id="canva">
+        </div>
+        <br/>
+        <input type="number" name="range" id="range" value="9999" step="100" min="0" max="1000000" />
     </div>
-    <div id="backContent"><img src="./img/loading.gif" /></div>
-</div>
-';
 
+</div>
+<div id="backContent"><img src="./img/loading.gif" /></div>
+';
+require_once('./include/footer.php');
 ?>
