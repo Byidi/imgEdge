@@ -16,7 +16,12 @@ echo '
     </div>
 
 </div>
+<div id="range">
+	<div id="sliderRange"></div>
+	<input type="text" id="rangeValue" value="10000" />
+</div>
 <div id="backContent"><img src="./img/loading.gif" /></div>
+
 ';
 require_once('./include/footer.php');
 ?>
